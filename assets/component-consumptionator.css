@@ -1,0 +1,195 @@
+  .slidecontainer {
+    background: rgba(124,116,71,.4);
+    display: grid; 
+    grid-template-columns: 50% 50%;
+    padding: 3%; 
+    width: 100%;
+  }
+  .slidecontainer.product {
+    display: flex; 
+    flex-direction: column;
+  }
+
+  .slide_text-wrapper {
+    margin-bottom: 8%;
+  }
+
+  .slide_text-wrapper h5, .slide_animation-text {
+    font-size: 1em; 
+    margin-bottom: .5em; 
+  }
+
+  .slide_animation-text{
+    margin: 0;
+  }
+
+  .slide_text-wrapper h3 {
+    font-size: 1.8em; 
+    margin-top: 0; 
+  }
+
+  .slide_animation-wrapper {
+    display: flex; 
+    flex-direction: column; 
+    width: 100%; 
+  }
+
+  .slide_animation-images {
+    display: flex;
+    min-height: 225px; 
+  }
+
+  .product .slide_animation-images { min-height: 200px; }
+
+@media (max-width: 990px){
+  .slide_animation-images { flex-direction: column; }
+  .product .slide_animation-equals { right: 0%; }
+  .product .slide_animation-icons-wrapper img { max-width: 50vw; }
+  .product .slide_animation-icons-wrapper.vertical img { max-height: 80px; max-width: 40vw;}
+}
+  
+  .slide_animation-mug-wrapper {
+    display: grid; 
+    height: fit-content; 
+    margin: 0 auto 20px; 
+    min-width: 165px; 
+    position: relative;
+  }
+
+  .slide_animation-mug {
+    margin: auto; 
+    width: fit-content; 
+  }
+
+  .slide_animation-mug img {
+    height: 90px; 
+    width: 100%; 
+  }
+
+  .slide_animation-num {
+    font-size: 2.5em;
+    line-height: 1.3;
+    margin: 0 .5rem 0 0; 
+  }
+
+  .slide_animation-equals {
+    display: block;
+    height: 12px;
+    position: absolute;
+    right: -7%; 
+    top: 35%;
+    width: 20px;
+  }
+
+  .slide_animation-equals:before {
+    background-color: #222;
+    content: "";
+    display: block;
+    height: 2px;
+    width: 100%;
+  }
+
+  .slide_animation-equals:after{
+    background-color: #222;
+    content: "";
+    display: block;
+    height: 2px;
+    margin-top: 10px;
+    width: 100%; 
+  }
+
+  .slide_animation-icons {
+    display: flex; 
+    justify-content: center; 
+    padding-bottom: 35px; 
+    position: relative; 
+    width: 100%;
+  }
+
+  .slide_animation-link {
+    bottom: 0;
+    color: #1d1d1d; 
+    font-family: "Proxima Nova";
+    font-size: 13px; 
+    position: absolute;
+    right: 0;
+    text-decoration: none; 
+    text-transform: uppercase; 
+  }
+
+  .slide_animation-link:hover {
+    opacity: .6; 
+  }
+
+  .slide_animation-text-wrapper {
+    align-items: center;
+    display: flex; 
+    justify-content: center; 
+  }
+
+  .slide_animation-text-wrapper > div {
+    align-items: center; 
+    display: flex; 
+    flex-direction: column; 
+  }
+
+  .slide_animation-icons-wrapper {
+    align-items: center; 
+    display: flex; 
+  }
+
+  .slide_animation-icons-wrapper.vertical {
+    flex-direction: column;
+    margin: auto;
+  }
+
+  .slide_animation-icon-text {
+    display: flex; 
+    flex-direction: column; 
+    margin-left: 15px;
+  }
+
+  .slide_animation-icons-wrapper.vertical .slide_animation-icon-text {
+    align-items: center;
+  }
+
+  .slide_animation-subtext {
+    color: rgba(0, 0, 0, .5);
+    font-size: .6em; 
+    margin: 0; 
+  }
+  
+  /* The slider itself */
+  .consumption-slider {
+    -webkit-appearance: none;  
+    appearance: none;
+    width: 100%;
+    height: 20px; 
+    border: 1px solid #000; 
+    border-radius: 30px;
+    background: #FDFCF7; 
+    margin-bottom: 25px;
+    outline: none; 
+  }
+  
+  
+  /* The slider handle (use -webkit- (Chrome, Opera, Safari, Edge) and -moz- (Firefox) to override default look) */
+  .consumption-slider::-webkit-slider-thumb {
+    -webkit-appearance: none; 
+    appearance: none;
+    width: 35px; 
+    height: 35px; 
+    background: #fff; 
+    border: 1px solid #000; 
+    border-radius: 50%;
+    cursor: pointer; 
+  }
+  
+  .consumption-slider::-moz-range-thumb {
+    width: 35px; 
+    height: 35px;
+    background: #fff;
+    border: 1px solid #000; 
+    border-radius: 50%;
+    cursor: pointer; 
+  }

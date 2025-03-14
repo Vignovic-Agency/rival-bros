@@ -1,0 +1,49 @@
+{{ 'component-consumptionator.css' | asset_url | stylesheet_tag }}
+{{ 'component-gridinator.css' | asset_url | stylesheet_tag }}
+
+<div class='consumptionator-wrapper'>
+  {% include 'grind-slider' bulk_url: '/collections/coffee?filter.p.tag=bulk', small_url:'/collections/coffee?filter.p.tag=12oz' %}
+</div>
+
+<style>
+  .consumptionator-wrapper {
+    max-width: 1400px; 
+    margin: 5rem auto; 
+  }
+  .consumptionator-wrapper .slidecontainer {
+    align-items: center; 
+    flex-direction: row; 
+  }
+
+  .consumptionator-wrapper .slide_text-wrapper {
+    margin-bottom: 0; 
+    margin-right: 5%;
+  }
+
+  @media (max-width: 749px){
+    .slide_animation-equals { right: 20% !important;}
+    .consumptionator-wrapper .slidecontainer { 
+      display: flex !important;
+      flex-direction: column; 
+      padding: 0 10px !important;
+    }
+  }
+</style>
+{% schema %}
+  {
+    "name": "Grindinator",
+    "tag": "section",
+    "settings": [],
+    "presets": [
+      {
+        "name": "Grindinator"
+      }
+    ]
+  }
+{% endschema %}
+
+{% stylesheet %}
+{% endstylesheet %}
+
+{% javascript %}
+{% endjavascript %}

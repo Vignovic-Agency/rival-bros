@@ -1,0 +1,157 @@
+{{ 'component-cart.css' | asset_url | stylesheet_tag }}
+{{ 'component-totals.css' | asset_url | stylesheet_tag }}
+{{ 'component-price.css' | asset_url | stylesheet_tag }}
+{{ 'component-discounts.css' | asset_url | stylesheet_tag }}
+
+{% assign wholesale_user = false %}
+{% assign investor_user = false %}
+{% assign disabled_customer = false %}
+{% assign cart_note = false %}
+{% if customer %}
+  {% for tag in customer.tags %}
+    {% if tag == 'cartnotes' %}
+      {% assign cart_note = true %}
+    {% endif %}
+    {% if tag == 'wholesaler' %}
+      {% assign wholesale_user = true %}
+    {% elsif tag contains 'investor' %}
+      {% assign investor_user = true %} 
+    {% elsif tag == 'disabled' %}
+      {% assign disabled_customer = true %}
+    {% endif %}
+  {% endfor %}
+{% endif %}
+
+<div class="page-width{% if cart == empty %} is-empty{% endif %}" id="main-cart-footer" data-id="{{ section.id }}">
+  <div>
+    <div class="cart__footer">
+      {%- if settings.show_cart_note and cart_note -%}
+        <cart-note class="cart__note field">
+          <label for="Cart-note">{{ 'sections.cart.note' | t }}</label>
+          <textarea class="text-area field__input" name="note" form="cart" id="Cart-note" placeholder="{{ 'sections.cart.note' | t }}">{{ cart.note }}</textarea>
+        </cart-note>
+      {%- endif -%}
+
+      <div class="cart__blocks">
+        {% for block in section.blocks %}
+          {%- case block.type -%}
+            {%- when '@app' -%}
+              {% render block %}
+            {%- when 'subtotal' -%}
+              <div class="js-contents" {{ block.shopify_attributes }}>
+                <div class="totals">
+                  <h2 class="totals__subtotal">{{ 'sections.cart.subtotal' | t }}</h2>
+                  <p class="totals__subtotal-value"><span class="wcp-original-cart-total">{{ cart.total_price | money}}</span>
+                  <span class="wcp-cart-total"></span></p>
+                  </div>
+                  <div class="additional-notes">
+                  <span class="wcp-minimums-note"></span>
+                  <span class="wcp-extra-note "></span>
+                  </div>{% render "wcp_multi_currency_msg" %}
+
+                <div>
+                  {%- if cart.cart_level_discount_applications.size > 0 -%}
+                    <ul class="discounts list-unstyled" role="list" aria-label="{{ 'customer.order.discount' | t }}">
+                      {%- for discount in cart.cart_level_discount_applications -%}
+                        <li class="discounts__discount discounts__discount--position">
+                          {%- render 'icon-discount' -%}
+                          {{ discount.title }}
+                          (-{{ discount.total_allocated_amount | money }})
+                        </li>
+                      {%- endfor -%}
+                    </ul>
+                  {%- endif -%}
+                </div>
+
+                <small class="tax-note caption-large rte">
+                  {%- if cart.taxes_included and shop.shipping_policy.body != blank -%}
+                    {{ 'sections.cart.taxes_included_and_shipping_policy_html' | t: link: shop.shipping_policy.url }}
+                  {%- elsif cart.taxes_included -%}
+                    {{ 'sections.cart.taxes_included_but_shipping_at_checkout' | t }}
+                  {%- elsif shop.shipping_policy.body != blank -%}
+                    {{ 'sections.cart.taxes_and_shipping_policy_at_checkout_html' | t: link: shop.shipping_policy.url }}
+                  {%- else -%}
+                    {{ 'sections.cart.taxes_and_shipping_at_checkout' | t }}
+                  {%- endif -%}
+                </small>
+              </div>
+            {%- else -%}
+              <div class="cart__ctas" {{ block.shopify_attributes }}>
+                <noscript>
+                  <button type="submit" class="cart__update-button button button--secondary" form="cart">
+                    {{ 'sections.cart.update' | t }}
+                  </button>
+                </noscript>
+
+                <button type="submit" id="checkout" class="cart__checkout-button button" name="checkout"{% if cart == empty or disabled_customer %} disabled{% endif %} form="cart">
+                  {{ 'sections.cart.checkout' | t }}
+                </button>
+              </div>
+{%- if additional_checkout_buttons -%}
+                <div class="cart__dynamic-checkout-buttons additional-checkout-buttons">
+                  {{ content_for_additional_checkout_buttons }}
+                </div>
+              {%- endif -%}
+          {%- endcase -%}
+        {% endfor %}
+
+        <div id="cart-errors"></div>
+
+        
+              <div>
+{% if customer.tags contains "wpdnet" %}
+        {% if shop.metafields.wcp_net.isNetEnabled == "true" or shop.metafields.wcp_net.isNetEnabled == "1" %}
+            <div style="margin-top:30px;float: right;">
+                <p>{{shop.metafields.wcp_net.netCartMsg}}</p>
+                <button id="wcp-30-open" class="button">{{shop.metafields.wcp_net.netBtnMsg}}</button>
+            </div>
+        {% endif %}
+    {% endif %}</div> 
+        
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    function isIE() {
+      const ua = window.navigator.userAgent;
+      const msie = ua.indexOf('MSIE ');
+      const trident = ua.indexOf('Trident/');
+
+      return (msie > 0 || trident > 0);
+    }
+
+    if (!isIE()) return;
+    const cartSubmitInput = document.createElement('input');
+    cartSubmitInput.setAttribute('name', 'checkout');
+    cartSubmitInput.setAttribute('type', 'hidden');
+    document.querySelector('#cart').appendChild(cartSubmitInput);
+    document.querySelector('#checkout').addEventListener('click', function(event) {
+      document.querySelector('#cart').submit();
+    });
+  });
+</script>
+
+{% schema %}
+{
+  "name": "t:sections.main-cart-footer.name",
+  "class": "cart__footer-wrapper",
+  "blocks": [
+    {
+      "type": "subtotal",
+      "name": "t:sections.main-cart-footer.blocks.subtotal.name",
+      "limit": 1
+    },
+    {
+      "type": "buttons",
+      "name": "t:sections.main-cart-footer.blocks.buttons.name",
+      "limit": 1
+    },
+    {
+      "type": "@app"
+    }
+  ]
+}
+{% endschema %}

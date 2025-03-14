@@ -1,0 +1,385 @@
+{{ 'component-article-card.css' | asset_url | stylesheet_tag }}
+{{ 'component-card.css' | asset_url | stylesheet_tag }}
+{{ 'section-main-blog.css' | asset_url | stylesheet_tag }}
+
+{%- style -%}
+  .section-{{ section.id }}-padding {
+    padding-top: {{ section.settings.padding_top | times: 0.75 | round: 0 }}px;
+    padding-bottom: {{ section.settings.padding_bottom | times: 0.75 | round: 0 }}px;
+  }
+
+  .mobile_filter { display: none; }
+  
+  .sidebar-heading { margin-top: 5rem; }
+
+  .article-card-wrapper .card { border: none; }
+
+  .coffee-blog {
+    display: grid; 
+    grid-template-columns: 2fr 1fr;
+    margin-bottom: 5rem;
+  }
+
+  .coffee-blog .main-blog { padding: 0 5%; }
+
+  .horizontal-card {
+    display: grid; 
+    grid-template-columns: repeat(2, 1fr); 
+    margin-bottom: 35px; 
+  }
+
+  .horizontal-card .side_img {
+    max-height: 150px; 
+    position: unset !important; 
+    transform: unset !important; 
+    width: 100% !important; 
+  }
+
+  .horizontal-card .card__content {
+    display: flex; 
+    flex-direction: column; 
+    padding: 0 10px; 
+  }
+
+  .horizontal-card .tag_wrapper {
+    bottom: 0; 
+    left: 50%; 
+    position: absolute; 
+    transform: translate(-50%, 50%);
+  }  
+
+  .article-sidebar a { text-decoration: none; }
+  
+  @media screen and (min-width: 750px) {
+    .section-{{ section.id }}-padding {
+      padding-top: {{ section.settings.padding_top }}px;
+      padding-bottom: {{ section.settings.padding_bottom }}px;
+    }
+  }
+
+  @media (max-width: 990px) {
+    .horizontal-card { grid-template-columns: 1fr; }
+
+    .horizontal-card .card__content {
+      padding: 25px 0 15px;
+    }
+  }
+
+  @media (max-width: 750px) {
+    .coffee-blog {
+      grid-template-columns: 1fr;
+    }
+
+    .article-sidebar {
+      display: none;
+    }
+
+    .mobile_filter { 
+      display: unset; 
+      margin: 0 1.6em;
+    }
+    
+    .tag-dropdown_wrapper {
+      display: flex; 
+      flex-direction: column; 
+      border: 1px solid #000; 
+      background: #fff; 
+      width: 100%; 
+    }
+
+    .tag-dropdown {
+      display: grid; 
+    }
+
+    .tag-dropdown_default {
+      display: flex; 
+      justify-content: space-between;
+      margin: 0; 
+      padding: 3px 8px; 
+    }
+
+    .tag-dropdown_default span {
+      height: 8px; 
+      width: 12px; 
+    }
+
+    .tag-dropdown_item {
+      border-bottom: 1px solid; 
+    }
+
+    .tag-dropdown_item a {
+      color: #000; 
+      padding: 3px 15px;
+      text-decoration: none; 
+    }
+    
+    .hide { display: none; }
+  }
+{%- endstyle -%}
+
+{%- paginate blog.articles by 6 -%}
+  <div class="coffee-blog">
+    <div class="main-blog page-width section-{{ section.id }}-padding">
+      <div class="mobile_filter">
+          <h3 class="sidebar-heading" style="margin-top: 0;">Explore By Topic</h3>
+          <div class="tag-dropdown_wrapper" onclick="displayTags()">
+            <p class="tag-dropdown_default">Explore <span>{% render 'icon-caret' %}</span></p>
+            <div id="tags" class="tag-dropdown hide">
+              <div class="tag-dropdown_item">
+                <a href="{{ blog.url }}"> All Topics </a>
+              </div>
+              {% if blog.tags.size > 0 %}
+                  {% for tag in blog.all_tags %}
+                    <div class="tag-dropdown_item" {% if forloop.last %} style="border-bottom: none;"{% endif %}>
+                      <a href="{{ blog.url }}/tagged/{{ tag | handleize }}">
+                        {{ tag }}
+                      </a>
+                    </div>
+                  {% endfor %}
+              {% endif %}
+            </div>
+          </div>
+      </div>
+      <h1 class="title--primary small-hide">{{ blog.title | escape }}</h1>
+  
+      <div class="blog-articles {% if section.settings.layout == 'collage' %}blog-articles--collage{% endif %}">
+        {%- for article in blog.articles -%}
+          <div class="blog-articles__article article">
+            {%- render 'article-card',
+              article: article,
+              media_height: section.settings.image_height,
+              media_aspect_ratio: article.image.aspect_ratio,
+              show_image: section.settings.show_image,
+              show_date: section.settings.show_date,
+              show_author: section.settings.show_author,
+              show_excerpt: false,
+              index: forloop.index
+            -%}
+          </div>
+        {%- endfor -%}
+      </div>
+  
+      {%- if paginate.pages > 1 -%}
+        {%- render 'pagination', paginate: paginate -%}
+      {%- endif -%}
+    </div>
+    
+      <div class="article-sidebar">
+        <div>
+          <h3 class="sidebar-heading" style="margin-top: 0;">Explore More</h3>
+          {% if blog.tags.size > 0 %}
+            <div class="tag_wrapper">
+              {% for tag in blog.all_tags %}
+                <div class="tag_item">
+                  <a href="{{ blog.url }}/tagged/{{ tag | handleize }}">
+                    {{ tag }}
+                  </a>
+                </div>
+              {% endfor %}
+            </div>
+          {% endif %}
+        </div>
+        <div>
+          {% if section.blocks.size > 0 %}
+            <h3 class="sidebar-heading">Popular Posts</h3>
+            {% for block in section.blocks %}
+              {% assign article = block.settings.popular_article %}
+              <a href="{{ article.url }}">
+              <div class="horizontal-card">
+                <div class="" style="position: relative;">
+                  <div class="article-card__image media media--hover-effect" {% if section.settings.media_height == 'adapt' %} style="padding-bottom: {{ 1 | divided_by: article.image.aspect_ratio | times: 100 }}%;"{% endif %}>
+                    {% comment %}theme-check-disable ImgLazyLoading{% endcomment %}
+                    <img
+                      srcset="{%- if article.image.src.width >= 165 -%}{{ article.image.src | image_url: width: 165 }} 165w,{%- endif -%}
+                        {%- if article.image.src.width >= 360 -%}{{ article.image.src | image_url: width: 360 }} 360w,{%- endif -%}
+                        {%- if article.image.src.width >= 533 -%}{{ article.image.src | image_url: width: 533 }} 533w,{%- endif -%}
+                        {%- if article.image.src.width >= 720 -%}{{ article.image.src | image_url: width: 720 }} 720w,{%- endif -%}
+                        {%- if article.image.src.width >= 1000 -%}{{ article.image.src | image_url: width: 1000 }} 1000w,{%- endif -%}
+                        {%- if article.image.src.width >= 1500 -%}{{ article.image.src | image_url: width: 1500 }} 1500w,{%- endif -%}
+                        {{ article.image.src | image_url }} {{ article.image.src.width }}w"
+                      data-src="{{ article.image.src | image_url: width: 533 }}"
+                      sizes="(min-width: {{ settings.page_width }}px) {{ settings.page_width | minus: 100 | divided_by: 2 }}px, (min-width: 750px) calc((100vw - 130px) / 2), calc((100vw - 50px) / 2)"
+                      alt="{{ article.image.src.alt | escape }}"
+                      class="motion-reduce lazyload side_img"
+                      {% unless lazy_load == false %}loading="lazy"{% endunless %}
+                      width="{{ article.image.width }}"
+                      height="{{ article.image.height }}"
+                    >
+                    {% comment %}theme-check-enable ImgLazyLoading{% endcomment %}
+
+                  </div>
+                    <div class="tag_wrapper">
+                      {% for tag in article.tags %}
+                          <div class="tag_item">
+                            <p>{{ tag }}</p>
+                          </div>
+                      {% endfor %}
+                    </div>
+                </div>
+                <div class="card__content">        
+                  <h3 class="card__heading{% if index == 1 %} h2{% endif %}">
+                      {{ article.title }}
+                  </h3>
+                  <div class="article-card__info caption-with-letter-spacing h5">
+                    {{ article.published_at | time_tag: format: 'date' }}
+                  </div>
+                </div>
+              </div>
+              </a>
+            {% endfor %}
+          {% endif %}
+        </div>
+        <div>
+          {% if section.settings.featured_product != blank %}
+            <h3 class="sidebar-heading">Featured Product</h3>
+            {% render 'card-product', card_product: section.settings.featured_product %}
+          {% endif %}
+        </div>
+      </div>
+  </div>
+{%- endpaginate -%}
+
+<script>
+  function displayTags() {
+    var tags = document.getElementById("tags"); 
+    tags.classList.toggle("hide"); 
+  }
+</script>
+
+{% schema %}
+{
+  "name": "t:sections.main-blog.name",
+  "tag": "section",
+  "class": "section",
+  "settings": [
+    {
+      "type": "header",
+      "content": "t:sections.main-blog.settings.header.content"
+    },
+    {
+      "type": "select",
+      "id": "layout",
+      "options": [
+        {
+          "value": "grid",
+          "label": "t:sections.main-blog.settings.layout.options__1.label"
+        },
+        {
+          "value": "collage",
+          "label": "t:sections.main-blog.settings.layout.options__2.label"
+        }
+      ],
+      "default": "collage",
+      "label": "t:sections.main-blog.settings.layout.label",
+      "info": "t:sections.main-blog.settings.layout.info"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_image",
+      "default": true,
+      "label": "t:sections.main-blog.settings.show_image.label"
+    },
+    {
+      "type": "select",
+      "id": "image_height",
+      "options": [
+        {
+          "value": "adapt",
+          "label": "t:sections.main-blog.settings.image_height.options__1.label"
+        },
+        {
+          "value": "small",
+          "label": "t:sections.main-blog.settings.image_height.options__2.label"
+        },
+        {
+          "value": "medium",
+          "label": "t:sections.main-blog.settings.image_height.options__3.label"
+        },
+        {
+          "value": "large",
+          "label": "t:sections.main-blog.settings.image_height.options__4.label"
+        }
+      ],
+      "default": "medium",
+      "label": "t:sections.main-blog.settings.image_height.label",
+      "info": "t:sections.main-blog.settings.image_height.info"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_date",
+      "default": true,
+      "label": "t:sections.main-blog.settings.show_date.label"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_author",
+      "default": false,
+      "label": "t:sections.main-blog.settings.show_author.label"
+    },
+    {
+      "type": "product",
+      "id": "featured_product",
+      "label": "Featured Product"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:sections.main-blog.settings.paragraph.content"
+    },
+    {
+      "type": "header",
+      "content": "t:sections.all.padding.section_padding_heading"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "t:sections.all.padding.padding_top",
+      "default": 36
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "t:sections.all.padding.padding_bottom",
+      "default": 36
+    }
+  ],
+  
+    "blocks": [
+      {
+        "type": "article",
+        "name": "Article",
+        "limit": 3, 
+        "settings": [
+          {
+            "type": "article",
+            "id": "popular_article",
+            "label": "Choose Article to Display in Popular Articles"
+          }
+        ]
+      }
+    ],
+  "presets": [    
+    {
+        "name": "t:sections.main-blog.name",
+        "blocks": [
+          {
+            "type": "article"
+          },
+          {
+            "type": "article"
+          },
+          {
+            "type": "article"
+          }
+        ]
+      }
+  ]
+}
+{% endschema %}

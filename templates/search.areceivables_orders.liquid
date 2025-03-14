@@ -1,0 +1,58 @@
+{% layout none %}
+{% assign isCustomerLoggedIn = false %}
+{% assign amountOwed = 0 %}
+{% if customer %}
+    {% assign isCustomerLoggedIn = true %}
+{% endif %}
+{% paginate customer.orders by 250  %}
+{% capture output %}
+    {
+        "isCustomerLoggedIn": "{{ isCustomerLoggedIn }}",
+        "orders": [
+            {% for order in customer.orders %}
+                {% if order.financial_status == 'pending' %}
+
+				{% assign fulfillmentDate = null %}
+				{% assign isAnyItemFulfilled = false %}
+
+					{% if order.fulfillment_status != null %}
+
+                      {% for lineItem in order.line_items %}
+						{% if isAnyItemFulfilled == true %}
+							{% continue %}
+						{% endif %}
+
+                      	{% if lineItem.fulfillment != null %}
+							{% assign fulfillmentDate = lineItem.fulfillment.created_at | date: "%Y-%m-%d" %}
+							{% assign isAnyItemFulfilled = true %}
+						{% endif %}
+                      {% endfor %}
+
+					{% endif %}
+
+					{% assign amountOwed = amountOwed | plus: order.total_price %}
+
+                    {
+                        "order_number":"{{ order.order_number }}",
+                        "order_url": "{{ order.customer_url }}",
+                        "order_name":"{{ order.order_name }}",
+                        "order_date":"{{ order.created_at | date: "%Y-%m-%d" }}",
+						"fulfillment_date": "{{ fulfillmentDate }}",
+                        "order_total_item":"{{ order.line_items | size }}",
+                        "order_total_item":"{{ order.line_items | size }}",
+                        "order_payment_status":"{{ order.financial_status }}",
+                        "order_fulfillment_status":"{{ order.fulfillment_status }}",
+                        "order_price":"{{ order.total_price | money }}",
+                        "order_tags":"{{ order.tags | join: '", " }}",
+                        "order_notes":"{{ order.note }}",
+                        "order_id":"{{ order.id }}"
+                    },
+                {% endif %}
+            {% endfor %}
+			{}
+        ],
+		"amountOwed": "{{ amountOwed | money }}"
+    }
+{% endcapture %}
+{% endpaginate %}
+{{ output | strip_newlines }}

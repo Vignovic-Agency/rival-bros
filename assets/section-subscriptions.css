@@ -1,0 +1,24 @@
+.subscriptions {
+  border: 1px solid #e4e6ed;
+  box-shadow: 0 9px 18px #32325d1a, 0 4px 8px #00000012;
+  margin-bottom: 5rem;
+  padding: 25px 50px; 
+}
+
+.subscriptions .product-form__input .select__select {
+  color: var(--color-foreground);
+  font-size: 13px; 
+  padding-left: 10px; 
+}
+
+.subscription .product--no-media .product-form > .form, 
+.subscriptions .product-form__buttons, 
+.subscriptions .product-form__submit { 
+  max-width: unset; 
+}
+
+.subscriptions .product-form__submit {
+  background: #7c7447;
+  color: #fff;
+  padding: 15px 45px; 
+}

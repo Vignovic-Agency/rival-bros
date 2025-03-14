@@ -1,0 +1,534 @@
+<!doctype html>
+<html class="no-js" lang="{{ request.locale.iso_code }}">
+  <head>
+    <!-- Hotjar Tracking Code for Site 5038755 (name missing) -->
+<script>
+    (function(h,o,t,j,a,r){
+        h.hj=h.hj||function(){(h.hj.q=h.hj.q||[]).push(arguments)};
+        h._hjSettings={hjid:5038755,hjsv:6};
+        a=o.getElementsByTagName('head')[0];
+        r=o.createElement('script');r.async=1;
+        r.src=t+h._hjSettings.hjid+j+h._hjSettings.hjsv;
+        a.appendChild(r);
+    })(window,document,'https://static.hotjar.com/c/hotjar-','.js?sv=');
+</script>
+    {% assign wholesale_user = false %}
+    {% assign investor_user = false %}
+    {% if customer %}
+      {% for tag in customer.tags %}
+        {% if tag == 'wholesaler' %}
+          {% assign wholesale_user = true %}
+        {% elsif tag contains 'investor' %}
+          {% assign investor_user = true %} 
+        {% endif %}
+      {% endfor %}
+    {% endif %}
+   <!-- Added by AVADA Cookies Bar -->
+   {% include 'avada-cookies-bar' %}
+   <!-- /Added by AVADA Cookies Bar -->
+  
+    <script src='{{ 'sealapps_email_config.js' | asset_url }}' defer='defer' ></script> 
+    <script src='{{ 'product_restore_email.js' | asset_url }}' defer='defer' ></script> 
+    <script id='em_product_variants' type='application/json'>
+        {{ product.variants | json }}
+    </script><!--Lazy Loading -->
+
+    <script id='em_product_selected_or_first_available_variant' type='application/json'>
+        {{ product.selected_or_first_available_variant | json }}
+    </script>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="theme-color" content="">
+    <link rel="canonical" href="{{ canonical_url }}">
+    <link rel="preconnect" href="https://cdn.shopify.com" crossorigin>
+
+    {%- if settings.favicon != blank -%}
+      <link rel="icon" type="image/png" href="{{ settings.favicon | image_url: width: 32, height: 32 }}">
+    {%- endif -%}
+
+    {%- unless settings.type_header_font.system? and settings.type_body_font.system? -%}
+      <link rel="preconnect" href="https://fonts.shopifycdn.com" crossorigin>
+    {%- endunless -%}
+
+    <title>
+      {{ page_title }}
+      {%- if current_tags %} &ndash; tagged "{{ current_tags | join: ', ' }}"{% endif -%}
+      {%- if current_page != 1 %} &ndash; Page {{ current_page }}{% endif -%}
+      {%- unless page_title contains shop.name %} &ndash; {{ shop.name }}{% endunless -%}
+    </title>
+
+    {% if page_description %}
+      <meta name="description" content="{{ page_description | escape }}">
+    {% endif %}
+
+    {% render 'meta-tags' %}
+
+    <script src="{{ 'global.js' | asset_url }}" defer="defer"></script>
+    {{ content_for_header }}
+
+    {%- liquid
+      assign body_font_bold = settings.type_body_font | font_modify: 'weight', 'bold'
+      assign body_font_italic = settings.type_body_font | font_modify: 'style', 'italic'
+      assign body_font_bold_italic = body_font_bold | font_modify: 'style', 'italic'
+    %}
+
+    {% style %}
+      {{ settings.type_body_font | font_face: font_display: 'swap' }}
+      {{ body_font_bold | font_face: font_display: 'swap' }}
+      {{ body_font_italic | font_face: font_display: 'swap' }}
+      {{ body_font_bold_italic | font_face: font_display: 'swap' }}
+      {{ settings.type_header_font | font_face: font_display: 'swap' }}
+
+      :root {
+        --font-body-family: {{ settings.type_body_font.family }}, {{ settings.type_body_font.fallback_families }};
+        --font-body-style: {{ settings.type_body_font.style }};
+        --font-body-weight: {{ settings.type_body_font.weight }};
+        --font-body-weight-bold: {{ settings.type_body_font.weight | plus: 300 | at_most: 1000 }};
+
+        --font-heading-family: {{ settings.type_header_font.family }}, {{ settings.type_header_font.fallback_families }};
+        --font-heading-style: {{ settings.type_header_font.style }};
+        --font-heading-weight: {{ settings.type_header_font.weight }};
+
+        --font-body-scale: {{ settings.body_scale | divided_by: 100.0 }};
+        --font-heading-scale: {{ settings.heading_scale | times: 1.0 | divided_by: settings.body_scale }};
+
+        --color-base-text: {{ settings.colors_text.red }}, {{ settings.colors_text.green }}, {{ settings.colors_text.blue }};
+        --color-shadow: {{ settings.colors_text.red }}, {{ settings.colors_text.green }}, {{ settings.colors_text.blue }};
+        --color-base-background-1: {{ settings.colors_background_1.red }}, {{ settings.colors_background_1.green }}, {{ settings.colors_background_1.blue }};
+        --color-base-background-2: {{ settings.colors_background_2.red }}, {{ settings.colors_background_2.green }}, {{ settings.colors_background_2.blue }};
+        --color-base-solid-button-labels: {{ settings.colors_solid_button_labels.red }}, {{ settings.colors_solid_button_labels.green }}, {{ settings.colors_solid_button_labels.blue }};
+        --color-base-outline-button-labels: {{ settings.colors_outline_button_labels.red }}, {{ settings.colors_outline_button_labels.green }}, {{ settings.colors_outline_button_labels.blue }};
+        --color-base-accent-1: {{ settings.colors_accent_1.red }}, {{ settings.colors_accent_1.green }}, {{ settings.colors_accent_1.blue }};
+        --color-base-accent-2: {{ settings.colors_accent_2.red }}, {{ settings.colors_accent_2.green }}, {{ settings.colors_accent_2.blue }};
+        --payment-terms-background-color: {{ settings.colors_background_1 }};
+
+        --gradient-base-background-1: {% if settings.gradient_background_1 != blank %}{{ settings.gradient_background_1 }}{% else %}{{ settings.colors_background_1 }}{% endif %};
+        --gradient-base-background-2: {% if settings.gradient_background_2 != blank %}{{ settings.gradient_background_2 }}{% else %}{{ settings.colors_background_2 }}{% endif %};
+        --gradient-base-accent-1: {% if settings.gradient_accent_1 != blank %}{{ settings.gradient_accent_1 }}{% else %}{{ settings.colors_accent_1 }}{% endif %};
+        --gradient-base-accent-2: {% if settings.gradient_accent_2 != blank %}{{ settings.gradient_accent_2 }}{% else %}{{ settings.colors_accent_2 }}{% endif %};
+
+        --media-padding: {{ settings.media_padding }}px;
+        --media-border-opacity: {{ settings.media_border_opacity | divided_by: 100.0 }};
+        --media-border-width: {{ settings.media_border_thickness }}px;
+        --media-radius: {{ settings.media_radius }}px;
+        --media-shadow-opacity: {{ settings.media_shadow_opacity | divided_by: 100.0 }};
+        --media-shadow-horizontal-offset: {{ settings.media_shadow_horizontal_offset }}px;
+        --media-shadow-vertical-offset: {{ settings.media_shadow_vertical_offset }}px;
+        --media-shadow-blur-radius: {{ settings.media_shadow_blur }}px;
+        --media-shadow-visible: {% if settings.media_shadow_opacity > 0 %}1{% else %}0{% endif %};
+
+        --page-width: {{ settings.page_width | divided_by: 10 }}rem;
+        --page-width-margin: {% if settings.page_width == '1600' %}2{% else %}0{% endif %}rem;
+
+        --product-card-image-padding: {{ settings.card_image_padding | divided_by: 10.0 }}rem;
+        --product-card-corner-radius: {{ settings.card_corner_radius | divided_by: 10.0 }}rem;
+        --product-card-text-alignment: {{ settings.card_text_alignment }};
+        --product-card-border-width: {{ settings.card_border_thickness | divided_by: 10.0 }}rem;
+        --product-card-border-opacity: {{ settings.card_border_opacity | divided_by: 100.0 }};
+        --product-card-shadow-opacity: {{ settings.card_shadow_opacity | divided_by: 100.0 }};
+        --product-card-shadow-visible: {% if settings.card_shadow_opacity > 0 %}1{% else %}0{% endif %};
+        --product-card-shadow-horizontal-offset: {{ settings.card_shadow_horizontal_offset | divided_by: 10.0 }}rem;
+        --product-card-shadow-vertical-offset: {{ settings.card_shadow_vertical_offset | divided_by: 10.0 }}rem;
+        --product-card-shadow-blur-radius: {{ settings.card_shadow_blur | divided_by: 10.0 }}rem;
+
+        --collection-card-image-padding: {{ settings.collection_card_image_padding | divided_by: 10.0 }}rem;
+        --collection-card-corner-radius: {{ settings.collection_card_corner_radius | divided_by: 10.0 }}rem;
+        --collection-card-text-alignment: {{ settings.collection_card_text_alignment }};
+        --collection-card-border-width: {{ settings.collection_card_border_thickness | divided_by: 10.0 }}rem;
+        --collection-card-border-opacity: {{ settings.collection_card_border_opacity | divided_by: 100.0 }};
+        --collection-card-shadow-opacity: {{ settings.collection_card_shadow_opacity | divided_by: 100.0 }};
+        --collection-card-shadow-visible: {% if settings.collection_card_shadow_opacity > 0 %}1{% else %}0{% endif %};
+        --collection-card-shadow-horizontal-offset: {{ settings.collection_card_shadow_horizontal_offset | divided_by: 10.0 }}rem;
+        --collection-card-shadow-vertical-offset: {{ settings.collection_card_shadow_vertical_offset | divided_by: 10.0 }}rem;
+        --collection-card-shadow-blur-radius: {{ settings.collection_card_shadow_blur | divided_by: 10.0 }}rem;
+
+        --blog-card-image-padding: {{ settings.blog_card_image_padding | divided_by: 10.0 }}rem;
+        --blog-card-corner-radius: {{ settings.blog_card_corner_radius | divided_by: 10.0 }}rem;
+        --blog-card-text-alignment: {{ settings.blog_card_text_alignment }};
+        --blog-card-border-width: {{ settings.blog_card_border_thickness | divided_by: 10.0 }}rem;
+        --blog-card-border-opacity: {{ settings.blog_card_border_opacity | divided_by: 100.0 }};
+        --blog-card-shadow-opacity: {{ settings.blog_card_shadow_opacity | divided_by: 100.0 }};
+        --blog-card-shadow-visible: {% if settings.blog_card_shadow_opacity > 0 %}1{% else %}0{% endif %};
+        --blog-card-shadow-horizontal-offset: {{ settings.blog_card_shadow_horizontal_offset | divided_by: 10.0 }}rem;
+        --blog-card-shadow-vertical-offset: {{ settings.blog_card_shadow_vertical_offset | divided_by: 10.0 }}rem;
+        --blog-card-shadow-blur-radius: {{ settings.blog_card_shadow_blur | divided_by: 10.0 }}rem;
+
+        --badge-corner-radius: {{ settings.badge_corner_radius | divided_by: 10.0 }}rem;
+
+        --popup-border-width: {{ settings.popup_border_thickness }}px;
+        --popup-border-opacity: {{ settings.popup_border_opacity | divided_by: 100.0 }};
+        --popup-corner-radius: {{ settings.popup_corner_radius }}px;
+        --popup-shadow-opacity: {{ settings.popup_shadow_opacity | divided_by: 100.0 }};
+        --popup-shadow-horizontal-offset: {{ settings.popup_shadow_horizontal_offset }}px;
+        --popup-shadow-vertical-offset: {{ settings.popup_shadow_vertical_offset }}px;
+        --popup-shadow-blur-radius: {{ settings.popup_shadow_blur }}px;
+
+        --drawer-border-width: {{ settings.drawer_border_thickness }}px;
+        --drawer-border-opacity: {{ settings.drawer_border_opacity | divided_by: 100.0 }};
+        --drawer-shadow-opacity: {{ settings.drawer_shadow_opacity | divided_by: 100.0 }};
+        --drawer-shadow-horizontal-offset: {{ settings.drawer_shadow_horizontal_offset }}px;
+        --drawer-shadow-vertical-offset: {{ settings.drawer_shadow_vertical_offset }}px;
+        --drawer-shadow-blur-radius: {{ settings.drawer_shadow_blur }}px;
+
+        --spacing-sections-desktop: {{ settings.spacing_sections }}px;
+        --spacing-sections-mobile: {% if settings.spacing_sections < 24 %}{{ settings.spacing_sections }}{% else %}{{ settings.spacing_sections | times: 0.7 | round | at_least: 20 }}{% endif %}px;
+
+        --grid-desktop-vertical-spacing: {{ settings.spacing_grid_vertical }}px;
+        --grid-desktop-horizontal-spacing: {{ settings.spacing_grid_horizontal }}px;
+        --grid-mobile-vertical-spacing: {{ settings.spacing_grid_vertical | divided_by: 2 }}px;
+        --grid-mobile-horizontal-spacing: {{ settings.spacing_grid_horizontal | divided_by: 2 }}px;
+
+        --text-boxes-border-opacity: {{ settings.text_boxes_border_opacity | divided_by: 100.0 }};
+        --text-boxes-border-width: {{ settings.text_boxes_border_thickness }}px;
+        --text-boxes-radius: {{ settings.text_boxes_radius }}px;
+        --text-boxes-shadow-opacity: {{ settings.text_boxes_shadow_opacity | divided_by: 100.0 }};
+        --text-boxes-shadow-visible: {% if settings.text_boxes_shadow_opacity > 0 %}1{% else %}0{% endif %};
+        --text-boxes-shadow-horizontal-offset: {{ settings.text_boxes_shadow_horizontal_offset }}px;
+        --text-boxes-shadow-vertical-offset: {{ settings.text_boxes_shadow_vertical_offset }}px;
+        --text-boxes-shadow-blur-radius: {{ settings.text_boxes_shadow_blur }}px;
+
+        --buttons-radius: {{ settings.buttons_radius }}px;
+        --buttons-radius-outset: {% if settings.buttons_radius > 0 %}{{ settings.buttons_radius | plus: settings.buttons_border_thickness }}{% else %}0{% endif %}px;
+        --buttons-border-width: {% if settings.buttons_border_opacity > 0 %}{{ settings.buttons_border_thickness }}{% else %}0{% endif %}px;
+        --buttons-border-opacity: {{ settings.buttons_border_opacity | divided_by: 100.0 }};
+        --buttons-shadow-opacity: {{ settings.buttons_shadow_opacity | divided_by: 100.0 }};
+        --buttons-shadow-visible: {% if settings.buttons_shadow_opacity > 0 %}1{% else %}0{% endif %};
+        --buttons-shadow-horizontal-offset: {{ settings.buttons_shadow_horizontal_offset }}px;
+        --buttons-shadow-vertical-offset: {{ settings.buttons_shadow_vertical_offset }}px;
+        --buttons-shadow-blur-radius: {{ settings.buttons_shadow_blur }}px;
+        --buttons-border-offset: {% if settings.buttons_radius > 0 or settings.buttons_shadow_opacity > 0 %}0.3{% else %}0{% endif %}px;
+
+        --inputs-radius: {{ settings.inputs_radius }}px;
+        --inputs-border-width: {{ settings.inputs_border_thickness }}px;
+        --inputs-border-opacity: {{ settings.inputs_border_opacity | divided_by: 100.0 }};
+        --inputs-shadow-opacity: {{ settings.inputs_shadow_opacity | divided_by: 100.0 }};
+        --inputs-shadow-horizontal-offset: {{ settings.inputs_shadow_horizontal_offset }}px;
+        --inputs-margin-offset: {% if settings.inputs_shadow_vertical_offset != 0 and settings.inputs_shadow_opacity > 0 %}{{ settings.inputs_shadow_vertical_offset | abs }}{% else %}0{% endif %}px;
+        --inputs-shadow-vertical-offset: {{ settings.inputs_shadow_vertical_offset }}px;
+        --inputs-shadow-blur-radius: {{ settings.inputs_shadow_blur }}px;
+        --inputs-radius-outset: {% if settings.inputs_radius > 0 %}{{ settings.inputs_radius | plus: settings.inputs_border_thickness }}{% else %}0{% endif %}px;
+
+        --variant-pills-radius: {{ settings.variant_pills_radius }}px;
+        --variant-pills-border-width: {{ settings.variant_pills_border_thickness }}px;
+        --variant-pills-border-opacity: {{ settings.variant_pills_border_opacity | divided_by: 100.0 }};
+        --variant-pills-shadow-opacity: {{ settings.variant_pills_shadow_opacity | divided_by: 100.0 }};
+        --variant-pills-shadow-horizontal-offset: {{ settings.variant_pills_shadow_horizontal_offset }}px;
+        --variant-pills-shadow-vertical-offset: {{ settings.variant_pills_shadow_vertical_offset }}px;
+        --variant-pills-shadow-blur-radius: {{ settings.variant_pills_shadow_blur }}px;
+      }
+
+      *,
+      *::before,
+      *::after {
+        box-sizing: inherit;
+      }
+
+      html {
+        box-sizing: border-box;
+        font-size: calc(var(--font-body-scale) * 62.5%);
+        height: 100%;
+      }
+
+      body {
+        display: grid;
+        grid-template-rows: auto auto 1fr auto;
+        grid-template-columns: 100%;
+        min-height: 100%;
+        margin: 0;
+        font-size: 1.5rem;
+        letter-spacing: 0.06rem;
+        line-height: calc(1 + 0.8 / var(--font-body-scale));
+        font-family: var(--font-body-family);
+        font-style: var(--font-body-style);
+        font-weight: var(--font-body-weight);
+      }
+
+      @media screen and (min-width: 750px) {
+        body {
+          font-size: 1.6rem;
+        }
+      }
+    {% endstyle %}
+
+    {{ 'base.css' | asset_url | stylesheet_tag }}
+
+    {%- unless settings.type_body_font.system? -%}
+      <link rel="preload" as="font" href="{{ settings.type_body_font | font_url }}" type="font/woff2" crossorigin>
+    {%- endunless -%}
+    {%- unless settings.type_header_font.system? -%}
+      <link rel="preload" as="font" href="{{ settings.type_header_font | font_url }}" type="font/woff2" crossorigin>
+    {%- endunless -%}
+
+    {%- if settings.predictive_search_enabled -%}
+      <link rel="stylesheet" href="{{ 'component-predictive-search.css' | asset_url }}" media="print" onload="this.media='all'">
+    {%- endif -%}
+
+    <script>document.documentElement.className = document.documentElement.className.replace('no-js', 'js');
+    if (Shopify.designMode) {
+      document.documentElement.classList.add('shopify-design-mode');
+    }
+    </script>
+{% unless wholesale_user %}
+      {% include 'yotpo-widgets-loader-script' %}
+  {% endunless %}
+   
+  
+   <!--Lazy Loading -->
+  {{ "lazysizes.min.js" | asset_url | script_tag }}
+    
+{% include 'sca.storelocator' %}
+
+  {% if product.metafields.custom.wholesaler_product or product.metafields.custom.investor_product or page.metafields.custom.no_index %}
+    <meta name="robots" content="noindex">
+  {% endif %}
+
+</head>
+
+  <body class="gradient">
+
+    <a class="skip-to-content-link button visually-hidden" href="#MainContent">
+      {{ "accessibility.skip_to_text" | t }}
+    </a>
+
+    {%- if settings.cart_type == 'drawer' -%}
+      {%- render 'cart-drawer' -%}
+    {%- endif -%}
+
+    {% section 'announcement-bar' %}
+    {% section 'header' %}
+    
+    {% assign wholesale_page = false %}
+    {% unless wholesale_user %}
+      {% if template.name == 'product' and product.metafields.custom.wholesaler_product %}
+        {% assign wholesale_page = true %}
+      {% elsif template.name == 'collection' and collection.metafields.custom.wholesaler_collection %}
+        {% assign wholesale_page = true %}
+      {% elsif template.name == 'page' and page.metafields.custom.wholesaler_page %}
+        {% assign wholesale_page = true %}
+      {% endif %}
+    {% endunless %}
+
+    
+    {% assign needs_specified_user = true %}
+    {% if wholesale_user %}
+      {% if template.name == 'product' and product.metafields.custom.wholesaler_product %}
+        {% if product.metafields.custom.wholesale_tags %}
+          {% assign wholesale_page = true %}
+          {% for value in product.metafields.custom.wholesale_tags.value %}
+            {% for tag in customer.tags %}
+              {% assign checked_value = value | strip %}
+              {% assign checked_tag = tag | strip %}
+              {% if checked_value == checked_tag %}
+                {% assign needs_specified_user = false %}
+              {% endif %}
+            {% endfor %}
+          {% endfor %}
+        {% endif %}
+      {% elsif template.name == 'collection' and collection.metafields.custom.wholesaler_collection %}
+        {% if collection.metafields.custom.wholesale_tags %}
+          {% assign wholesale_page = true %}
+          {% for value in collection.metafields.custom.wholesale_tags.value %}
+            {% for tag in customer.tags %}
+              {% assign checked_value = value | strip %}
+              {% assign checked_tag = tag | strip %}
+              {% if checked_value == checked_tag %}
+                {% assign needs_specified_user = false %}
+              {% endif %}
+            {% endfor %}
+          {% endfor %}
+        {% endif %}
+      {% elsif template.name == 'page' and page.metafields.custom.wholesaler_page %}
+        {% if page.metafields.custom.wholesale_tags %}
+          {% assign wholesale_page = true %}
+          {% for value in page.metafields.custom.wholesale_tags.value %}
+            {% for tag in customer.tags %}
+              {% assign checked_value = value | strip %}
+              {% assign checked_tag = tag | strip %}
+              {% if checked_value == checked_tag %}
+                {% assign needs_specified_user = false %}
+              {% endif %}
+            {% endfor %}
+          {% endfor %}
+        {% endif %}
+      {% endif %}
+    {% endif %}
+    
+    {% assign investor_page = false %}
+    {% unless investor_user %}
+      {% if template.name == 'product' and product.metafields.custom.investor_product %}
+        {% assign investor_page = true %}
+      {% elsif template.name == 'collection' and collection.metafields.custom.investor_collection %}
+        {% assign investor_page = true %}
+      {% endif %}
+    {% endunless %}
+
+    {% assign hidden_product = false %}
+    {% if template.name == 'product' and product.metafields.custom.hide_product%}
+      {% assign hidden_product = true %}
+    {% endif %}
+
+    {% assign hidden_from_wholesale = false %}
+    {% if template.name == 'product' and product.metafields.custom.hide_from_wholesale %}
+      {% assign hidden_from_wholesale = true %}
+    {% endif %}
+      
+    
+    <main id="MainContent" class="content-for-layout focus-none" role="main" tabindex="-1">
+      {% if hidden_product %}
+        <div style='display: flex; justify-content: center; padding: 4% 0 6%;'>
+          <div style="display: flex; flex-direction: column; width: fit-content;">
+            <h2 style="text-align: center;">Sorry this page is only available for team members.</h2>
+          </div>
+        </div>
+      {% elsif hidden_from_wholesale and wholesale_user %}
+        <div style='display: flex; justify-content: center; padding: 4% 0 6%;'>
+          <div style="display: flex; flex-direction: column; width: fit-content;">
+            <h2 style="text-align: center;">Sorry this product is not available for wholesale.</h2>
+          </div>
+        </div>
+      {% elsif wholesale_page and needs_specified_user %}
+        <div style='display: flex; justify-content: center; padding: 4% 0 6%;'>
+          <div style="display: flex; flex-direction: column; width: fit-content;">
+            <h2 style="text-align: center;">Sorry this page is only available to our wholesale partners.</h2>
+            <p>Interested in becoming a wholesaler with us? Get more information about our program <a href='/pages/wholesale'>here</a> <br />
+            Are you a wholesale partner? <a href='/pages/wholesale-login'>Login here</a></p>
+          </div>
+        </div>
+      {% elsif investor_page %}
+        <div style='display: flex; justify-content: center; padding: 4% 0 6%;'>
+          <div style="display: flex; flex-direction: column; width: fit-content;">
+            <h2 style="text-align: center;">Sorry this page is only available to our investors. </h2>
+            <p style="text-align: center;">Are you a Rival Bros Investor? <a href='/account/login'>Login here</a></p>
+          </div>
+        </div>
+      {% else %}
+        {{ content_for_layout }}
+      {% endif %}
+    </main>
+
+    {% section 'footer' %}
+
+    <ul hidden>
+      <li id="a11y-refresh-page-message">{{ 'accessibility.refresh_page' | t }}</li>
+      <li id="a11y-new-window-message">{{ 'accessibility.link_messages.new_window' | t }}</li>
+    </ul>
+
+    <script>
+      window.shopUrl = '{{ request.origin }}';
+      window.routes = {
+        cart_add_url: '{{ routes.cart_add_url }}',
+        cart_change_url: '{{ routes.cart_change_url }}',
+        cart_update_url: '{{ routes.cart_update_url }}',
+        cart_url: '{{ routes.cart_url }}',
+        predictive_search_url: '{{ routes.predictive_search_url }}'
+      };
+
+      window.cartStrings = {
+        error: `{{ 'sections.cart.cart_error' | t }}`,
+        quantityError: `{{ 'sections.cart.cart_quantity_error_html' | t: quantity: '[quantity]' }}`
+      }
+
+      window.variantStrings = {
+        addToCart: `{{ 'products.product.add_to_cart' | t }}`,
+        soldOut: `{{ 'products.product.sold_out' | t }}`,
+        unavailable: `{{ 'products.product.unavailable' | t }}`,
+      }
+
+      window.accessibilityStrings = {
+        imageAvailable: `{{ 'products.product.media.image_available' | t: index: '[index]' }}`,
+        shareSuccess: `{{ 'general.share.success_message' | t }}`,
+        pauseSlideshow: `{{ 'sections.slideshow.pause_slideshow' | t }}`,
+        playSlideshow: `{{ 'sections.slideshow.play_slideshow' | t }}`,
+      }
+    </script>
+
+    {%- if settings.predictive_search_enabled -%}
+      <script src="{{ 'predictive-search.js' | asset_url }}" defer="defer"></script>
+    {%- endif -%}
+  <!-- WPD Start -->
+                {% if customer.tags.size > 0 and template != 'cart' %}
+                <script>
+                    document.addEventListener('DOMContentLoaded', function() {
+                      let checkoutbtninterval = setInterval(function(){
+                        var x=document.querySelectorAll("input[name='checkout'], button[name='checkout'], input[name='goto_pp'], button[name='goto_pp'], input[name='goto_gc'], button[name='goto_gc'], [href$='checkout']");
+                        var WPD_RedirectToCart = function(e) {
+                          	e.stopPropagation();
+                            e.preventDefault();
+                            window.location = '/cart';
+                            };
+                            for (var i = 0; i < x.length; i++) {
+                                x[i].addEventListener('click', WPD_RedirectToCart, false);
+                            }
+                        },500)
+                });
+              </script>
+               {% endif %}
+         
+
+               {% if customer.tags.size > 0 and template == 'cart' %}
+                 {% include 'wcp_cart' %}
+               {% endif %}
+               <!-- WPD End -->
+
+    {% assign wcp_wholesale_customer = false %}
+{% if shop.metafields.wcp_status.wcp_status != 'disabled' and customer %}
+{% assign active_discounts = shop.metafields.wcp_active_discounts.wcp_active_discounts %}
+{% assign active_discounts_array = active_discounts | split: ',' %}
+{% assign customer_tags = blank %}
+{% for tag in customer.tags %}
+{% assign tempTag = tag | downcase %}
+{% assign customer_tags = customer_tags | prepend:tempTag %}
+{% unless forloop.last %}
+{% assign customer_tags = customer_tags | prepend:','  %}
+{% endunless %}
+{% endfor %}
+{% assign customer_tags = customer_tags | split:',' %}
+{% assign active_discounts = active_discounts | downcase %}
+{% for discount_key in active_discounts_array %}
+{% assign key_split = discount_key | split: '-' %}
+{% assign key_split_length = key_split | size %}
+{% if key_split_length > 2 %}
+{% assign removeable_key = key_split.last | prepend: '-' %}
+{% assign wcp_customer_tag = discount_key | remove_last: removeable_key %}
+{% else %}
+{% assign wcp_customer_tag = key_split[0] %}
+{% endif %}
+{% assign wcp_customer_tag = wcp_customer_tag | downcase %}
+{% if customer_tags contains wcp_customer_tag %}
+{% assign wcp_wholesale_customer = true %}
+{% endif %}
+{% endfor %}
+{% endif %}
+
+{% if wcp_wholesale_customer == true %}
+<style>
+
+.dynamic-checkout__content{
+display:none !important;
+}
+  #cb-shipping-bar { display: none !important; }
+</style>
+{% endif %}	
+    <style>
+      .referral {
+        background: #7C7447;
+        border-radius: 5px 5px 0 0; 
+        left: -50px; 
+        padding: 10px; 
+        position: fixed; 
+        rotate: 90deg;
+        top: 75%;
+        z-index: 999; 
+      }
+      .referral a {
+        color: #fff; 
+        font-family: "Brandon_med";
+        text-decoration: none;
+      }
+    </style>
+      <div class="referral">
+        <a href="/pages/refer-a-friend">Give $5, Get $5</a>
+      </div>
+  </body>
+</html>

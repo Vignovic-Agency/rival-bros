@@ -1,0 +1,57 @@
+.wholesale-login_wrapper {
+  align-content: center;
+  display: flex !important; 
+  flex-wrap: wrap;
+  justify-content: flex-start; 
+  max-width: 100vw !important; 
+}
+
+.wholesale-login_panel, .wholesale-login_info {
+  width: 47vw; 
+}
+
+@media (max-width: 999px) {
+  .wholesale-login_panel, .wholesale-login_info {
+    width: 100%; 
+  }
+}
+
+.wholesale-login_panel {
+  align-items: center;
+  display: flex;
+  padding: 0 2vw 0 4vw;
+}
+
+.wholesale-login { width: 100%; }
+
+.wholesale-login form {
+  display: flex; 
+  flex-direction: column; 
+  justify-content: flex-start;
+  margin-top: 0rem;
+
+  > p { text-align: left; }
+}
+
+.wholesale-login_submit {
+  max-width: 150px;
+}
+
+.wholesale-login_info { padding: 0 4vw 0 2vw;}
+
+@media (max-width: 999px) {
+  .wholesale-login_panel , .wholesale-login_info { padding: 2vw 0;}
+}
+
+.wholesale-login_info p {
+  display: inline-block;  
+  text-align: left;
+}
+
+.wholesale-login_info a { 
+  display: inline;  
+  font-size: 17px; 
+  margin: 0 4px;
+}
+
+.wholesale-login_info hr { margin: 0; }

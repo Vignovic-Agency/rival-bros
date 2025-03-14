@@ -1,0 +1,30 @@
+.grindinator-wrapper .slide_animation-mug-wrapper {
+  display: flex; 
+  flex-direction: column; 
+  justify-content: center;
+  min-width: 200px;
+}
+
+.grindinator-wrapper .slide_animation-mug img {
+  height: 125px; 
+  width: auto;
+}
+
+.grindinator-wrapper .slide_animation-text {
+  text-align: center;
+}
+
+.grindinator-wrapper .slide_animation-icon-text {
+  margin: 10px auto 0; 
+}
+
+.grindinator-wrapper .slide_animation-icons-wrapper img {
+  border-radius: 50%; 
+  box-shadow: 0px 0px 5px 2px rgba(0, 0, 0, .05);
+}
+
+@media (max-width: 749px) {
+  .grindinator-wrapper .slide_animation-icons-wrapper.vertical img {
+    max-height: unset; 
+  }
+}

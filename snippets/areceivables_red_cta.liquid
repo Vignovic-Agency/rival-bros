@@ -1,0 +1,29 @@
+{% paginate customer.orders by 250 %}
+{% assign amountOwed = 0 %}
+{% assign pendingOrders = 0 %}
+{% for order in customer.orders %}
+    {% if order.financial_status == 'pending' %}
+        {% assign amountOwed = amountOwed | plus: order.total_price %}
+        {% assign pendingOrders = pendingOrders | plus: 1 %}
+    {% endif %}
+{% endfor %}
+{% endpaginate %}
+
+{% if amountOwed > 0 %}
+  <a href="{{ 'https://' | append: request.host | append: '/apps/areceivables' }}" target="_blank" style="text-decoration: none; border: none;width: 100%;">
+    <div
+         style="width: 100%; background: #DE3618; box-shadow: 0px 4px 4px rgba(80, 184, 60, 0.15); border-radius: 6px; padding: 15px; margin-bottom: 25px;">
+      <div style="display:inline-block; width: 20%">
+        <span style="font-weight: bold; color: white;">{{ amountOwed | money }}</span>
+      </div>
+      <div style="display:inline-block; width: 58%">
+        <span style="font-weight: bold; color: white;">pending in payments from {{ pendingOrders }} orders</span>
+      </div>
+      <div style="display:inline-block; width: 20%; text-align:center; cursor: pointer;">
+        <span style="color: #7A0808; font-weight: bold;">
+          Check now
+        </span>
+      </div>
+    </div>
+  </a>
+{% endif %}

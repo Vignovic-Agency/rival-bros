@@ -1,0 +1,17 @@
+.testimonials .multicolumn-card__image-wrapper {
+  margin: 0; 
+}
+
+.testimonials .multicolumn-list h3 {
+  margin-top: 0; 
+}
+
+.testimonials .rte p {
+  font-size: 18px; 
+  margin: 15px auto !important;
+}
+
+.testimonials .sub_header p{
+  line-height: 20px !important;
+  margin: 10px auto;
+}

@@ -1,0 +1,73 @@
+<div class="slidecontainer grindinator-wrapper {%  unless product.title contains 'Subscription' %} product {% endunless %}">
+  <div class='slide_text-wrapper'>
+    <h5>Coffee Grind Calculator</h5>
+    <h3>What grind do I need?</h3>
+    <p>If you do not grind your own whole beans, move the slider along the bar based on your brewing method, and we’ll calculate what grind you need. Yup, it’s that simple.</p>
+  </div>
+  <div class='slide_animation-wrapper'>
+    <div class='slide_animation-images'>
+      <div class='slide_animation-mug-wrapper'>
+        <div class='slide_animation-mug' id='brew_type'>
+          
+        </div>
+        <span class='slide_animation-equals'></span>
+        <div class='slide_animation-text-wrapper'>
+          <div>
+            <h5 id='brew_text' class='slide_animation-text'></h5>
+          </div>
+        </div>
+      </div>
+      <div id='brew_images' class='slide_animation-icons'>
+      </div>
+    </div>
+    <input type="range" min="1" max="5" value="1" class="consumption-slider" id="brewRange">
+  </div>
+</div>
+
+{% capture coarse_brew %}<img data-src="https://cdn.shopify.com/s/files/1/0698/7025/6435/files/french_press.png?v=1715802598" width="60"  class="lazyload"/>{% endcapture %}
+{% capture med_coarse_brew %}<img data-src="https://cdn.shopify.com/s/files/1/0698/7025/6435/files/chemez.png?v=1715804871" width="60"  class="lazyload"/>{% endcapture %}
+{% capture medium_brew %}<img data-src="https://cdn.shopify.com/s/files/1/0698/7025/6435/files/drip_brew.png?v=1715802598" width="60"  class="lazyload"/>{% endcapture %}
+{% capture med_fine_brew %}<img data-src="https://cdn.shopify.com/s/files/1/0698/7025/6435/files/pour_over.png?v=1715802598" width="60"  class="lazyload"/>{% endcapture %}
+{% capture fine_brew %}<img data-src="https://cdn.shopify.com/s/files/1/0698/7025/6435/files/espresso.png?v=1715802597" width="60"  class="lazyload"/>{% endcapture %}
+
+{% capture coarse %}<div class="slide_animation-icons-wrapper vertical"> <img src="https://cdn.shopify.com/s/files/1/0698/7025/6435/files/coarse.png?v=1715725796" width="150" height="150" /> <div class="slide_animation-icon-text"><h5 class="slide_animation-text">COARSE GRIND</h5></div> </div>{% endcapture %}
+{% capture med_coarse  %}<div class="slide_animation-icons-wrapper vertical"> <img src="https://cdn.shopify.com/s/files/1/0698/7025/6435/files/medium_coarse.png?v=1715801566" width="150" height="150" /> <div class="slide_animation-icon-text"><h5 class="slide_animation-text">MEDIUM COARSE GRIND</h5></div> </div>{% endcapture %}
+{% capture medium  %}<div class="slide_animation-icons-wrapper vertical"> <img src="https://cdn.shopify.com/s/files/1/0698/7025/6435/files/medium_grind_3fd45903-2ca2-4da9-8650-92fdd251ac09.png?v=1715801566" width="150" height="150" /> <div class="slide_animation-icon-text"><h5 class="slide_animation-text">MEDIUM GRIND</h5></div> </div>{% endcapture %}
+{% capture med_fine  %}<div class="slide_animation-icons-wrapper vertical"> <img src="https://cdn.shopify.com/s/files/1/0698/7025/6435/files/medium_fine_grind_78ba98b4-df92-402a-a8c9-5c211f175eaa.png?v=1715801566" width="150" height="150" /> <div class="slide_animation-icon-text"><h5 class="slide_animation-text">MEDIUM FINE GRIND</h5></div> </div>{% endcapture %}
+{% capture fine  %}<div class="slide_animation-icons-wrapper vertical"> <img src="https://cdn.shopify.com/s/files/1/0698/7025/6435/files/fine_grind_4628c900-496b-421a-9715-d9aded7a4218.png?v=1715801566" width="150" height="150" /> <div class="slide_animation-icon-text"><h5 class="slide_animation-text">FINE GRIND</h5></div> </div>{% endcapture %}
+
+<script>
+  var slider = document.getElementById("brewRange");
+  var brew_text = document.getElementById("brew_text");
+  var brew_type = document.getElementById("brew_type");
+  var brew_images = document.getElementById("brew_images");
+  var consumption = slider.value * 10; 
+  brew_text.innerHTML = 'French Press';
+  brew_images.innerHTML = '{{ coarse }}';
+  brew_type.innerHTML = '{{ coarse_brew }}';
+  
+  // Update the current slider value (each time you drag the slider handle)
+  slider.oninput = function() {
+    if(this.value == 1) {
+      brew_type.innerHTML = '{{ coarse_brew }}';
+      brew_images.innerHTML = '{{ coarse }}';
+      brew_text.innerHTML = 'French Press'
+    } else if(this.value == 2) {
+      brew_type.innerHTML = '{{ med_coarse_brew }}';
+      brew_images.innerHTML = '{{ med_coarse }}';
+      brew_text.innerHTML = 'Pour Over Brewers';
+    } else if(this.value == 3) {
+      brew_type.innerHTML = '{{ medium_brew }}';
+      brew_images.innerHTML = '{{ medium }}';
+      brew_text.innerHTML = 'Automatic Drip Brewers';
+    } else if(this.value == 4) {
+      brew_type.innerHTML = '{{ med_fine_brew }}';
+      brew_images.innerHTML = '{{ med_fine }}';
+      brew_text.innerHTML = 'Single Cup Pour Over';
+    } else {
+      brew_type.innerHTML = '{{ fine_brew }}';
+      brew_images.innerHTML = '{{ fine }}';
+      brew_text.innerHTML = 'Espresso Machines';
+    } 
+  }
+</script>

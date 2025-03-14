@@ -1,0 +1,213 @@
+<style>
+    @media only screen and (min-width: 750px)
+{ 
+.js-recentPdpBlock{
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
+  column-gap: var(--grid-desktop-horizontal-spacing);
+  margin-bottom: 40px;
+}
+}
+
+@media only screen and (max-width: 576px)
+{
+    /* Code by https://websensepro.com */
+  .js-recentPdpBlock{
+  display: grid;
+  grid-template-columns: 1fr;
+  column-gap: var(--grid-desktop-horizontal-spacing);
+}
+  .c-product img{
+height: 230px !important;
+  }
+}
+
+.recently-title h2 {
+    font-size: 24px;
+    border-top: 1px solid #d2d2d2;
+    margin-bottom: 50px; 
+    padding-top: 20px;
+}
+</style>
+<script>
+    // First Block
+        function setRecentlyViewedPdp() {
+            const pdpData = {
+                productTitle : "{{ product.title }}",
+                productImg : "{{ product.featured_image | img_url: '' }}",
+                productPrice : "{{ product.price | money | remove_first: '' }}",
+                productUrl : "{{ product.url }}"
+            };
+    
+            // Init Empty Array to push data
+            const productArr = [];
+            // Create a couple of variables 
+            let jsonResp,
+                jsonRespArr, 
+                jsonRespArrStr; 
+            // Set the number how many products you want to capture 
+            const numberOfProduct = 5;
+            // Now push the pdpData into Array so that we can use it 
+            productArr.push(pdpData);
+            // Get the product title from pdpData 
+            const currPdpTitle = pdpData.productTitle;
+            // Now Convert current page data into Strings which we already pushed in Array 
+            const pdpDataString = JSON.stringify(productArr);
+            // Set the variable for localStorage 
+            const localData = localStorage.getItem('recently_viewed');
+          
+            // Second Block
+            // first we need to check data if data is not there then store right // away 
+            if (localData == null) {
+                localStorage.setItem('recently_viewed', pdpDataString);
+                
+            }
+            // If data is there then we need to check couple of other conditions 
+            else if ( localData != null ) {
+                
+                // Create Variable for oldData or Previous page 
+                const oldPdpData = localStorage.getItem('recently_viewed');
+                // Count the amount of data stored in strings so that we can remove // old products from the stack 
+                const countPdpData = (oldPdpData.match(/productTitle/g) || []).length;
+                // we also need to check if user is not visiting page again 
+                const reVisitPdp =  oldPdpData.includes(currPdpTitle);
+                // Get old data, merged it with new data and store merged data
+                if (countPdpData < numberOfProduct && reVisitPdp == false) {
+                    jsonResp = JSON.parse(oldPdpData);
+                    jsonRespArr = jsonResp.concat(productArr);
+                    jsonRespArrStr = JSON.stringify(jsonRespArr);
+                    localStorage.setItem('recently_viewed', jsonRespArrStr);
+                }
+                // If User visited more the 4 pages delete first page data 
+                else if (countPdpData >= numberOfProduct && reVisitPdp == false) {
+                    jsonResp = JSON.parse(oldPdpData);
+                    jsonResp.shift();
+                    jsonRespArr = jsonResp.concat(productArr);
+                    jsonRespArr =  JSON.stringify(jsonRespArr);
+                    localStorage.setItem('recently_viewed', jsonRespArr);
+                }
+            }
+        }
+        
+        // Now we write all our function and it's time to execute it 
+        setRecentlyViewedPdp();
+        // Set Variable for Local Storage Data 
+        const localViewed = localStorage.recently_viewed;
+        // console.log to verify the data 
+    </script>
+             <div class="recently-title account">
+                      <h2 class="title inline-richtext h2 scroll-trigger animate--slide-in"><b>Recently Viewed</b></h2>
+                    </div>
+    <div class="js-recentPdpBlock page-width account">
+    </div>
+    <script>
+        // Third Block
+        function getRecentPdp (){
+    
+            // First let's convert localStorage data into object again
+            var pdpData = JSON.parse(localStorage.getItem('recently_viewed'));
+console.log(pdpData); 
+          if (pdpData.length > 1) {
+
+            pdpData = pdpData.slice(1);
+            console.log('slice', pdpData);
+            // Create a empty Array
+            const recentViewHtml = []
+            // Loop through all the data and inject into HTML using ES6
+            pdpData.forEach(function(item){ 
+                recentViewHtml.push(`
+                    <section id="Recent">
+                    <div class="card-wrapper product-card-wrapper underline-links-hover" style="height: 100%; display: flex;">
+                      <div class="
+                          card
+                          card--card
+                           card--media
+                           color-background-1 gradient "
+                        style="width: fit-content; margin: auto auto 0;"     
+                      >
+                        <div class="card__inner  ratio" >
+                              <a href="${item.productUrl}">
+                                <img class="motion-reduce collection_image ls-is-cached lazyloaded" src='${item.productImg}' style="max-width: 300px; max-height: 300px;"/>
+                              </a>
+                        </div>
+                        <div class="card__content">
+                          <div class="card__information">
+                            <h3 class="card__heading center" style="margin-bottom: 5px;">
+                                <a class="full-unstyled-link" href="${item.productUrl}">
+                                ${item.productTitle}
+                                </a>
+                            </h3>
+                            
+                            <div class="card__information">
+                              <div class="price  price--on-sale center">
+                                <div class="price__container">
+                                  <div class="price__regular">
+                                    <span class="visually-hidden visually-hidden--inline">Regular price</span>
+                                    <span class="price-item price-item--regular" data-uw-rm-sr="price" aria-label="Previous price was $3.63">
+                                      $3.63
+                                    </span>
+                                  </div>
+                                  <div class="price__sale">
+                                      <span class="visually-hidden visually-hidden--inline">Regular price</span>
+                                      <span>
+                                        <s class="price-item price-item--regular" data-uw-rm-sr="price" aria-label="Previous price was $9.75">
+                                          
+                                            $9.75
+                                          
+                                        </s>
+                                      </span><span class="visually-hidden visually-hidden--inline">Sale price</span>
+                                    <span class="price-item price-item--sale price-item--last" data-uw-rm-sr="">
+                                      $3.63
+                                    </span>
+                                  </div>
+                                  <small class="unit-price caption hidden">
+                                    <span class="visually-hidden">Unit price</span>
+                                    <span class="price-item price-item--last">
+                                      <span></span>
+                                      <span aria-hidden="true">/</span>
+                                      <span class="visually-hidden">&nbsp;per&nbsp;</span>
+                                      <span>
+                                      </span>
+                                    </span>
+                                  </small>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    
+                    </section>
+                `)
+            })
+            // Now consolidate the data 
+            const recentBlock = `${recentViewHtml.join('')}`
+
+            // Inject into PDP page
+            const contentBlock = document.querySelectorAll('.js-recentPdpBlock');
+            // Push the data
+            contentBlock.forEach(element =>{
+                element.innerHTML = recentBlock;
+            })
+          }
+           
+        }
+        // Execute this function on DOM content load 
+    
+        getRecentPdp();
+        </script>
+
+{% schema %}
+  {
+    "name": "Recently Viewed",
+    "tag": "section",
+    "settings": [],
+    "presets": [
+      {
+        "name": "Recently Viewed"
+      }
+    ]
+  }
+{% endschema %}

@@ -1,0 +1,86 @@
+{% assign bulk_bag = 'Rival 5lb bag.png' | asset_img_url: '150x150' %}
+{% if product.title contains 'Whistle' %}
+  {% assign single_bag = 'whistle-cuss-bag.png' | asset_img_url: '125x90' %}
+  {% assign double_bag = 'rival-double-bag.png' | asset_img_url: '250x90' %}
+{% elsif product.title contains '-' %}
+  {% assign single_bag = 'single-origin-bag.png' | asset_img_url: '125x90' %}
+  {% assign double_bag = 'double-single-origin.png' | asset_img_url: '250x90' %}
+{% else %}
+  {% assign single_bag = 'revolver-small-bag.png' | asset_img_url: '125x90' %}
+  {% assign double_bag = 'rival-double-bag.png' | asset_img_url: '250x90' %}
+{% endif %}
+
+  
+<div class="slidecontainer {%  unless product.title contains 'Subscription' %} product {% endunless %}">
+  <div class='slide_text-wrapper'>
+    <h5>Coffee Subscription Calculator</h5>
+    <h3>How much coffee do I need?</h3>
+    <p>Move the slider along the bar based on how much your household drinks per day, and we’ll calculate how much coffee suits your needs. Yup, it’s that simple.</p>
+  </div>
+  <div class='slide_animation-wrapper'>
+    <div class='slide_animation-images'>
+      <div class='slide_animation-mug-wrapper'>
+        <div class='slide_animation-mug'>
+          <img data-src='https://cdn.shopify.com/s/files/1/0698/7025/6435/files/Rival_Mug.png?v=1679683291' alt='Rival mug' width='60'  class="lazyload"/>
+          
+        </div>
+        <span class='slide_animation-equals'></span>
+        <div class='slide_animation-text-wrapper'>
+            <p id='mug_num' class='slide_animation-num'></p>
+          <div>
+            <h5 id='mug_text' class='slide_animation-text'></h5>
+            <p id='oz_num' class='slide_animation-subtext'></p>
+          </div>
+        </div>
+      </div>
+      <div id='coffee_images' class='slide_animation-icons'>
+      </div>
+    </div>
+    <input type="range" min="1" max="10" value="1" class="consumption-slider" id="myRange">
+    <p class='slide_animation-subtext'>1 CUP OF COFFEE = A 10 OZ SERVING BASED ON A 1:20 BREW RATIO</p>
+  </div>
+</div>
+
+{% capture single_cup %}<div class="slide_animation-icons-wrapper"> <img src={{ single_bag }} /> <div class="slide_animation-icon-text"><h5 class="slide_animation-text">12 oz bag</h5>  <p class="slide_animation-subtext">EVERY 24 DAYS</p></div> </div>{% if small_url %}<a href="{{ small_url }}" class="slide_animation-link">Choose Subscription</a>{% endif %}{% endcapture %}
+{% capture double_cup  %}<div class="slide_animation-icons-wrapper vertical"> <img src={{ single_bag }} /> <div class="slide_animation-icon-text"><h5 class="slide_animation-text">12 oz bag</h5>  <p class="slide_animation-subtext">EVERY 12 DAYS</p></div> </div><h2 style="height: fit-content; margin: auto;">OR</h2><div class="slide_animation-icons-wrapper vertical"> <img src={{ double_bag }} /> <div class="slide_animation-icon-text"><h5 class="slide_animation-text">two 12 oz bag</h5>  <p class="slide_animation-subtext">EVERY 24 DAYS</p></div> </div>{% if small_url %}<a href="{{ small_url }}" class="slide_animation-link">Choose Subscription</a>{% endif %}{% endcapture %}
+{% capture triple_cup  %}<div class="slide_animation-icons-wrapper vertical"> <img src={{ single_bag }} /> <div class="slide_animation-icon-text"><h5 class="slide_animation-text">12 oz bag</h5>  <p class="slide_animation-subtext">EVERY 8 DAYS</p></div> </div><h2 style="height: fit-content; margin: auto;">OR</h2><div class="slide_animation-icons-wrapper vertical"> <img src={{ double_bag }} /> <div class="slide_animation-icon-text"><h5 class="slide_animation-text">two 12 oz bag</h5>  <p class="slide_animation-subtext">EVERY 16 DAYS</p></div> </div>{% if small_url %}<a href="{{ small_url }}" class="slide_animation-link">Choose Subscription</a>{% endif %}{% endcapture %}
+{% capture four_cup  %}<div class="slide_animation-icons-wrapper vertical"> <img src={{ double_bag }} /> <div class="slide_animation-icon-text"><h5 class="slide_animation-text">two 12 oz bag</h5>  <p class="slide_animation-subtext">EVERY 12 DAYS</p></div> </div><h2 style="height: fit-content; margin: auto;">OR</h2><div class="slide_animation-icons-wrapper vertical"> <img src={{ bulk_bag }} /> <div class="slide_animation-icon-text"><h5 class="slide_animation-text">5 lb bag</h5>  <p class="slide_animation-subtext">EVERY 40 DAYS</p></div> </div>{% if bulk_url %}<a href="{{ bulk_url }}" class="slide_animation-link">Choose Subscription</a> {% elsif small_url %}<a href="{{ small_url }}" class="slide_animation-link">Get Subscription</a>{% endif %}{% endcapture %}
+{% capture five_cup  %}<div class="slide_animation-icons-wrapper vertical"> <img src={{ double_bag }} /> <div class="slide_animation-icon-text"><h5 class="slide_animation-text">two 12 oz bag</h5>  <p class="slide_animation-subtext">EVERY 9 DAYS</p></div> </div><h2 style="height: fit-content; margin: auto;">OR</h2><div class="slide_animation-icons-wrapper vertical"> <img src={{ bulk_bag }} /> <div class="slide_animation-icon-text"><h5 class="slide_animation-text">5 lb bag</h5>  <p class="slide_animation-subtext">EVERY 32 DAYS</p></div> </div>{% if bulk_url %}<a href="{{ bulk_url }}" class="slide_animation-link">Choose Subscription</a> {% elsif small_url %}<a href="{{ small_url }}" class="slide_animation-link">Get Subscription</a>{% endif %}{% endcapture %}
+{% capture six_cup  %}<div class="slide_animation-icons-wrapper"> <img src={{ bulk_bag }} /> <div class="slide_animation-icon-text"><h5 class="slide_animation-text">5 lb bag</h5>  <p class="slide_animation-subtext">EVERY 27 DAYS</p></div> </div>{% if bulk_url %}<a href="{{ bulk_url }}" class="slide_animation-link">Choose Subscription</a>{% endif %}{% endcapture %}
+{% capture seven_cup  %}<div class="slide_animation-icons-wrapper"> <img src={{ bulk_bag }} /> <div class="slide_animation-icon-text"><h5 class="slide_animation-text">5 lb bag</h5>  <p class="slide_animation-subtext">EVERY 23 DAYS</p></div> </div>{% if bulk_url %}<a href="{{ bulk_url }}" class="slide_animation-link">Choose Subscription</a>{% endif %}{% endcapture %}
+{% capture eight_cup  %}<div class="slide_animation-icons-wrapper"> <img src={{ bulk_bag }} /> <div class="slide_animation-icon-text"><h5 class="slide_animation-text">5 lb bag</h5>  <p class="slide_animation-subtext">EVERY 20 DAYS</p></div> </div>{% if bulk_url %}<a href="{{ bulk_url }}" class="slide_animation-link">Choose Subscription</a>{% endif %}{% endcapture %}
+{% capture nine_cup  %}<div class="slide_animation-icons-wrapper"><img src={{ bulk_bag }} /> <div class="slide_animation-icon-text"><h5 class="slide_animation-text">5 lb bag</h5>  <p class="slide_animation-subtext">EVERY 18 DAYS</p></div> </div>{% if bulk_url %}<a href="{{ bulk_url }}" class="slide_animation-link">Choose Subscription</a>{% endif %}{% endcapture %}
+{% capture ten_cup  %}<div class="slide_animation-icons-wrapper"> <img src={{ bulk_bag }} /> <div class="slide_animation-icon-text"><h5 class="slide_animation-text">5 lb bag</h5>  <p class="slide_animation-subtext">EVERY 16 DAYS</p></div> </div>{% if bulk_url %}<a href="{{ bulk_url }}" class="slide_animation-link">Choose Subscription</a>{% endif %}{% endcapture %}
+
+<script>
+  var slider = document.getElementById("myRange");
+  var mug_num = document.getElementById("mug_num");
+  var oz_num = document.getElementById("oz_num");
+  var mug_text = document.getElementById("mug_text");
+  var coffee_images = document.getElementById("coffee_images");
+  var consumption = slider.value * 10; 
+  mug_num.innerHTML = slider.value; // Display the default slider value
+  oz_num.innerHTML = consumption + ' oz per day'
+  mug_text.innerHTML = 'Cup of Coffee'
+  coffee_images.innerHTML = '{{ single_cup }}'
+  
+  // Update the current slider value (each time you drag the slider handle)
+  slider.oninput = function() {
+    mug_num.innerHTML = this.value;
+    oz_num.innerHTML = this.value * 10 + ' oz per day';
+
+    if(this.value > 1) mug_text.innerHTML = 'Cups of Coffee';
+    else mug_text.innerHTML = 'Cup of Coffee';
+
+    if(this.value == 1) coffee_images.innerHTML = '{{ single_cup }}';
+    if(this.value == 2) coffee_images.innerHTML = '{{ double_cup }}';
+    if(this.value == 3) coffee_images.innerHTML = '{{ triple_cup }}';
+    if(this.value == 4) coffee_images.innerHTML = '{{ four_cup }}';
+    if(this.value == 5) coffee_images.innerHTML = '{{ five_cup }}';
+    if(this.value == 6) coffee_images.innerHTML = '{{ six_cup }}';
+    if(this.value == 7) coffee_images.innerHTML = '{{ seven_cup }}';
+    if(this.value == 8) coffee_images.innerHTML = '{{ eight_cup }}';
+    if(this.value == 9) coffee_images.innerHTML = '{{ nine_cup }}';
+    if(this.value == 10) coffee_images.innerHTML = '{{ ten_cup }}';
+  }
+</script>

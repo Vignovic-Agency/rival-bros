@@ -1,0 +1,340 @@
+{% assign wholesale_user = false %}
+{% if customer %}
+  {% for tag in customer.tags %}
+    {% if tag == 'wholesaler' %}
+      {% assign wholesale_user = true %}
+    {% endif %}
+  {% endfor %}
+{% endif %}
+{{ 'section-image-banner.css' | asset_url | stylesheet_tag }}
+{{ 'component-slider.css' | asset_url | stylesheet_tag }}
+{{ 'component-slideshow.css' | asset_url | stylesheet_tag }}
+
+<slideshow-component class="slider-mobile-gutter{% if section.settings.layout == 'grid' %} page-width{% endif %}{% if section.settings.show_text_below %} mobile-text-below{% endif %}" role="region" aria-roledescription="{{ 'sections.slideshow.carousel' | t }}" aria-label="{{ section.settings.accessibility_info | escape }}">
+  {%- if section.settings.auto_rotate and section.blocks.size > 1 -%}
+    <div class="slideshow__controls slideshow__controls--top slider-buttons arrow-container no-js-hidden{% if section.settings.show_text_below %} slideshow__controls--border-radius-mobile{% endif %} large-up-hide medium-hide">
+      <button type="button" class="slider-button slider-button--prev" name="previous" aria-label="{{ 'sections.slideshow.previous_slideshow' | t }}" aria-controls="Slider-{{ section.id }}">{% render 'icon-caret' %}</button>
+      <button type="button" class="slider-button slider-button--next" name="next" aria-label="{{ 'sections.slideshow.next_slideshow' | t }}" aria-controls="Slider-{{ section.id }}">{% render 'icon-caret' %}</button>
+    </div>
+    <div class="slideshow__controls slideshow__controls--top slider-buttons no-js-hidden{% if section.settings.show_text_below %} slideshow__controls--border-radius-mobile{% endif %} large-up-hide medium-hide">
+      <div class="slider-counter slider-counter--{{ section.settings.slider_visual }}{% if section.settings.slider_visual == 'counter' or section.settings.slider_visual == 'numbers' %} caption{% endif %}">
+        {%- if section.settings.slider_visual == 'counter' -%}
+          <span class="slider-counter--current">1</span>
+          <span aria-hidden="true"> / </span>
+          <span class="visually-hidden">{{ 'general.slider.of' | t }}</span>
+          <span class="slider-counter--total">{{ section.blocks.size }}</span>
+        {%- else-%}
+          <div class="slideshow__control-wrapper">
+            {%- for block in section.blocks -%}
+              <button class="slider-counter__link slider-counter__link--{{ section.settings.slider_visual }} link" aria-label="{{ 'sections.slideshow.load_slide' | t }} {{ forloop.index }} {{ 'general.slider.of' | t }} {{ forloop.length }}" aria-controls="Slider-{{ section.id }}">
+                {%- if section.settings.slider_visual == 'numbers' -%}{{ forloop.index }}{% else %}<span class="dot"></span>{%- endif -%}
+              </button>
+            {%- endfor -%}
+          </div>
+        {%- endif -%}
+      </div>
+    </div>
+    <noscript>
+      <div class="slider-buttons">
+        <div class="slider-counter">
+          {%- for block in section.blocks -%}
+            <a href="#Slide-{{ section.id }}-{{ forloop.index }}" class="slider-counter__link link" aria-label="{{ 'sections.slideshow.load_slide' | t }} {{ forloop.index }} {{ 'general.slider.of' | t }} {{ forloop.length }}">
+              {{ forloop.index }}
+            </a>
+          {%- endfor -%}
+        </div>
+      </div>
+    </noscript>
+  {%- endif -%}
+
+  <div class="slideshow banner banner--{{ section.settings.slide_height }} grid grid--1-col slider slider--everywhere{% if section.settings.show_text_below %} banner--mobile-bottom{% endif %}{% if section.blocks.first.settings.image == blank %} slideshow--placeholder{% endif %}"
+    id="Slider-{{ section.id }}"
+    aria-live="polite"
+    aria-atomic="true"
+    data-autoplay="{{ section.settings.auto_rotate }}"
+    data-speed="{{ section.settings.change_slides_speed }}"
+  >
+    {%- for block in section.blocks -%}
+      <style>
+        #Slide-{{ section.id }}-{{ forloop.index }} .banner__media::after {
+          opacity: {{ block.settings.image_overlay_opacity | divided_by: 100.0 }};
+        }
+      </style>
+      <div class="announcement-bar color-{{ block.settings.color_scheme }} gradient slideshow__slide grid__item grid--1-col slider__slide" 
+          id="Slide-{{ section.id }}-{{ forloop.index }}"
+          {{ block.shopify_attributes }}
+          role="group"
+          aria-roledescription="{{ 'sections.slideshow.slide' | t }}"
+          aria-label="{{ forloop.index }} {{ 'general.slider.of' | t }} {{ forloop.length }}"
+          tabindex="-1"
+        >
+          {% assign announcement_text = '' %}
+          {% if wholesale_user and block.settings.wholesale_text %}
+            {% assign announcement_text = block.settings.wholesale_text | escape %}
+          {% elsif block.settings.text%}
+            {% assign announcement_text = block.settings.text | escape %}
+          {% endif %}
+          {%- if announcement_text != blank -%}
+            {%- if block.settings.link != blank -%}
+              <a href="{{ block.settings.link }}" class="announcement-bar__link link link--text focus-inset animate-arrow">
+            {%- endif -%}
+                <div class="page-width">
+                  <p class="announcement-bar__message {{ block.settings.text_alignment }} h5">
+                    {{ announcement_text }}
+                    {%- if block.settings.link != blank -%}
+                      {% render 'icon-arrow' %}
+                    {%- endif -%}
+                  </p>
+                </div>
+            {%- if block.settings.link != blank -%}
+              </a>
+            {%- endif -%}
+          {%- endif -%}
+        </div>
+    {%- endfor -%}
+  </div>
+
+  {%- if section.blocks.size > 1 and section.settings.auto_rotate == false -%}
+    <div class="slideshow__controls slider-buttons no-js-hidden{% if section.settings.show_text_below %} slideshow__controls--border-radius-mobile{% endif %}">
+      <button type="button" class="slider-button slider-button--prev" name="previous" aria-label="{{ 'sections.slideshow.previous_slideshow' | t }}" aria-controls="Slider-{{ section.id }}">{% render 'icon-caret' %}</button>
+      <div class="slider-counter slider-counter--{{ section.settings.slider_visual }}{% if section.settings.slider_visual == 'counter' or section.settings.slider_visual == 'numbers' %} caption{% endif %}">
+        {%- if section.settings.slider_visual == 'counter' -%}
+          <span class="slider-counter--current">1</span>
+          <span aria-hidden="true"> / </span>
+          <span class="visually-hidden">{{ 'general.slider.of' | t }}</span>
+          <span class="slider-counter--total">{{ section.blocks.size }}</span>
+        {%- else-%}
+          <div class="slideshow__control-wrapper">
+            {%- for block in section.blocks -%}
+              <button class="slider-counter__link slider-counter__link--{{ section.settings.slider_visual }} link" aria-label="{{ 'sections.slideshow.load_slide' | t }} {{ forloop.index }} {{ 'general.slider.of' | t }} {{ forloop.length }}" aria-controls="Slider-{{ section.id }}">
+                {%- if section.settings.slider_visual == 'numbers' -%}{{ forloop.index }}{% else %}<span class="dot"></span>{%- endif -%}
+              </button>
+            {%- endfor -%}
+          </div>
+        {%- endif -%}
+      </div>
+      <button type="button" class="slider-button slider-button--next" name="next" aria-label="{{ 'sections.slideshow.next_slideshow' | t }}" aria-controls="Slider-{{ section.id }}">{% render 'icon-caret' %}</button>
+
+      {%- if section.settings.auto_rotate -%}
+        <button type="button" class="slideshow__autoplay slider-button no-js-hidden{% if section.settings.auto_rotate == false %} slideshow__autoplay--paused{% endif %}" aria-label="{{ 'sections.slideshow.pause_slideshow' | t }}">
+          {%- render 'icon-pause' -%}
+          {%- render 'icon-play' -%}
+        </button>
+      {%- endif -%}
+    </div>
+    <noscript>
+      <div class="slider-buttons">
+        <div class="slider-counter">
+          {%- for block in section.blocks -%}
+            <a href="#Slide-{{ section.id }}-{{ forloop.index }}" class="slider-counter__link link" aria-label="{{ 'sections.slideshow.load_slide' | t }} {{ forloop.index }} {{ 'general.slider.of' | t }} {{ forloop.length }}">
+              {{ forloop.index }}
+            </a>
+          {%- endfor -%}
+        </div>
+      </div>
+    </noscript>
+  {%- endif -%}
+</slideshow-component>
+{% if section.settings.text != blank %}
+  <div class="announcement-bar color-{{ section.settings.color_scheme }} gradient" role="region" aria-label="{{ 'sections.header.announcement' | t }}" {{ block.shopify_attributes }}>
+    {%- if section.settings.text != '' -%}
+      {%- if section.settings.link != blank -%}
+        <a href="{{ section.settings.link }}" class="announcement-bar__link link link--text focus-inset animate-arrow" {% if section.settings.target %} target="_blank" aria-label="{{ section.settings.text }} (opens in a new tab)"{% endif %}>
+      {%- endif -%}
+        <div class="page-width">
+          <p class="announcement-bar__message {{ section.settings.text_alignment }} h5">
+            {{ section.settings.text }}
+            {%- if section.settings.link != blank -%}
+              {% render 'icon-arrow' %}
+            {%- endif -%}
+          </p>
+        </div>
+      {%- if section.settings.link != blank -%}
+        </a>
+      {%- endif -%}
+    {%- endif -%}
+  </div>
+{% endif %}
+
+{%- if request.design_mode -%}
+  <script src="{{ 'theme-editor.js' | asset_url }}" defer="defer"></script>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "t:sections.announcement-bar.name",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Sub Announcement",
+      "info": "Sub announcements appear under the announcement slider"
+    },
+    {
+      "type": "text",
+      "id": "text",
+      "default": "Welcome to our store",
+      "label": "t:sections.announcement-bar.blocks.announcement.settings.text.label"
+    },
+    {
+      "type": "select",
+      "id": "text_alignment",
+      "options": [
+        {
+          "value": "left",
+          "label": "t:sections.announcement-bar.blocks.announcement.settings.text_alignment.options__1.label"
+        },
+        {
+          "value": "center",
+          "label": "t:sections.announcement-bar.blocks.announcement.settings.text_alignment.options__2.label"
+        },
+        {
+          "value": "right",
+          "label": "t:sections.announcement-bar.blocks.announcement.settings.text_alignment.options__3.label"
+        }
+      ],
+      "default": "center",
+      "label": "t:sections.announcement-bar.blocks.announcement.settings.text_alignment.label"
+    },
+    {
+      "type": "select",
+      "id": "color_scheme",
+      "options": [
+        {
+          "value": "accent-1",
+          "label": "t:sections.all.colors.accent_1.label"
+        },
+        {
+          "value": "accent-2",
+          "label": "t:sections.all.colors.accent_2.label"
+        },
+        {
+          "value": "background-1",
+          "label": "t:sections.all.colors.background_1.label"
+        },
+        {
+          "value": "background-2",
+          "label": "t:sections.all.colors.background_2.label"
+        },
+        {
+          "value": "inverse",
+          "label": "t:sections.all.colors.inverse.label"
+        }
+      ],
+      "default": "accent-1",
+      "label": "t:sections.all.colors.label"
+    },
+    {
+      "type": "url",
+      "id": "link",
+      "label": "t:sections.announcement-bar.blocks.announcement.settings.link.label"
+    },
+    {
+      "type": "checkbox",
+      "id": "target",
+      "label": "Open link in new window",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "Slider settings"
+    },
+    {
+      "type": "checkbox",
+      "id": "auto_rotate",
+      "label": "t:sections.slideshow.settings.auto_rotate.label",
+      "default": false
+    },
+    {
+      "type": "range",
+      "id": "change_slides_speed",
+      "min": 3,
+      "max": 9,
+      "step": 2,
+      "unit": "s",
+      "label": "t:sections.slideshow.settings.change_slides_speed.label",
+      "default": 5
+    }
+  ],
+  "max_blocks": 12,
+  "blocks": [
+    {
+      "type": "announcement",
+      "name": "t:sections.announcement-bar.blocks.announcement.name",
+      "settings": [
+        {
+          "type": "text",
+          "id": "text",
+          "default": "Welcome to our store",
+          "label": "t:sections.announcement-bar.blocks.announcement.settings.text.label"
+        },
+        {
+          "type": "text",
+          "id": "wholesale_text",
+          "default": "Welcome to our store",
+          "label": "Wholesale Text"
+        },
+        {
+          "type": "select",
+          "id": "text_alignment",
+          "options": [
+            {
+              "value": "left",
+              "label": "t:sections.announcement-bar.blocks.announcement.settings.text_alignment.options__1.label"
+            },
+            {
+              "value": "center",
+              "label": "t:sections.announcement-bar.blocks.announcement.settings.text_alignment.options__2.label"
+            },
+            {
+              "value": "right",
+              "label": "t:sections.announcement-bar.blocks.announcement.settings.text_alignment.options__3.label"
+            }
+          ],
+          "default": "center",
+          "label": "t:sections.announcement-bar.blocks.announcement.settings.text_alignment.label"
+        },
+        {
+          "type": "select",
+          "id": "color_scheme",
+          "options": [
+            {
+              "value": "accent-1",
+              "label": "t:sections.all.colors.accent_1.label"
+            },
+            {
+              "value": "accent-2",
+              "label": "t:sections.all.colors.accent_2.label"
+            },
+            {
+              "value": "background-1",
+              "label": "t:sections.all.colors.background_1.label"
+            },
+            {
+              "value": "background-2",
+              "label": "t:sections.all.colors.background_2.label"
+            },
+            {
+              "value": "inverse",
+              "label": "t:sections.all.colors.inverse.label"
+            }
+          ],
+          "default": "accent-1",
+          "label": "t:sections.all.colors.label"
+        },
+        {
+          "type": "url",
+          "id": "link",
+          "label": "t:sections.announcement-bar.blocks.announcement.settings.link.label"
+        }
+      ]
+    }
+  ],
+  "default": {
+    "blocks": [
+      {
+        "type": "announcement"
+      }
+    ]
+  }
+}
+{% endschema %}
